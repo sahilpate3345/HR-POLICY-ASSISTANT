@@ -125,14 +125,4 @@ You can run the assistant in interactive chat mode or run single queries directl
 
 ---
 
-## Evaluation
-
-You can run automated correctness and groundedness evaluations using LangSmith:
-```bash
-python hr_assistant/evaluate.py
-```
-This script runs the assistant against a set of predefined test cases (10 key policy questions), generates answers, retrieves source contexts, and uses an LLM judge (`openai/gpt-oss-20b` via Portkey) to score performance. The results are automatically logged as a dataset run in your LangSmith project dashboard.
-=======
-# HR-POLICY-ASSISTANT
-chatbot framework
->>>>>>> 139abba0a1e9d39b5ac7b2a8aded0bda4df9633c
+This evaluation script tests the HR Assistant using 10 predefined HR policy questions. For each question, it retrieves relevant source contexts, generates an answer using the configured LLM, and evaluates the response using an LLM-based judge (`openai/gpt-oss-20b` via Portkey). The evaluation results are automatically recorded and available in the LangSmith project dashboard for analysis and performance tracking.
