@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Acme Corp HR Policy Assistant
 
 An advanced, production-ready Retrieval-Augmented Generation (RAG) assistant designed to help employees of Acme Corp query company HR policies with high accuracy. The project features input/output safety guardrails, Portkey LLM gateway integration, LangSmith tracing, and automated correctness/groundedness evaluation.
@@ -131,3 +132,7 @@ You can run automated correctness and groundedness evaluations using LangSmith:
 python hr_assistant/evaluate.py
 ```
 This script runs the assistant against a set of predefined test cases (10 key policy questions), generates answers, retrieves source contexts, and uses an LLM judge (`openai/gpt-oss-20b` via Portkey) to score performance. The results are automatically logged as a dataset run in your LangSmith project dashboard.
+=======
+# HR-POLICY-ASSISTANT
+chatbot framework
+>>>>>>> 139abba0a1e9d39b5ac7b2a8aded0bda4df9633c
