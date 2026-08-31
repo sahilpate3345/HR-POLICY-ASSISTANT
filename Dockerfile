@@ -1,5 +1,5 @@
 # this is a python image
-FROM python:3.11-slim  
+FROM python:3.10.11-slim 
 
 # use uv for venv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
