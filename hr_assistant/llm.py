@@ -4,11 +4,14 @@ from hr_assistant.config import GROQ_API_KEY, GROQ_MODEL, PORTKEY_API_KEY
 from portkey_ai import createHeaders, PORTKEY_GATEWAY_URL
 
 
+VALID_GROQ_MODELS = {"openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b", "allam-2-7b"}
+
+
 class GroqLLM:
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or GROQ_API_KEY
         raw_model = model or GROQ_MODEL
-        if raw_model and "qwen3.6" in str(raw_model).lower():
+        if not raw_model or str(raw_model).lower() not in VALID_GROQ_MODELS:
             self.model = "openai/gpt-oss-120b"
         else:
             self.model = raw_model
@@ -28,9 +31,11 @@ class GroqLLM:
             self.model,
             "openai/gpt-oss-120b",
             "openai/gpt-oss-20b",
-            "qwen/qwen3.8-27b",
-            "allam-2-7b"
+            "qwen/qwen3.8-27b"
         ]
+        models_to_try = list(dict.fromkeys([m for m in models_to_try if m and str(m).lower() in VALID_GROQ_MODELS]))
+        if not models_to_try:
+            models_to_try = ["openai/gpt-oss-120b"]
 
         last_error = ""
 
