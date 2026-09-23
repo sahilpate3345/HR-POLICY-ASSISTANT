@@ -34,16 +34,18 @@ def build_vector_store_for_document(file_path: str = config.DATA_FILE_PATH):
     if vector_store_exists():
         print("Found an existing Qdrant Cloud collection, connecting to it (fast, no re-embedding).")
         logger.info("Qdrant Cloud collection already exists, reusing it")
-        return load_vector_store()
+        store = load_vector_store()
+        if store is not None:
+            return store
 
-    print("No Qdrant Cloud collection found, building one from scratch...")
-    logger.info("No Qdrant Cloud collection found, building one from scratch")
+    print("No Qdrant Cloud collection found or reachable, building vector store...")
+    logger.info("No Qdrant Cloud collection found or reachable, building vector store")
     documents = load_document(file_path)
     chunks = split_into_chunks(documents)
     print(f"Loaded '{file_path}' and split it into {len(chunks)} chunks.")
 
     vector_store = build_vector_store(chunks)
-    print("Vector store built and uploaded to Qdrant Cloud.")
+    print("Vector store built successfully.")
     return vector_store
     
 # data retreival    

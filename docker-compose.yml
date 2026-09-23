@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  hr-assistant-app:
+    build: .
+    container_name: hr-assistant-app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    restart: unless-stopped

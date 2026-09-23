@@ -6,25 +6,42 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+def _clean_env(key: str, default: str | None = None) -> str | None:
+    """Retrieve environment variable and strip surrounding quotes/whitespace."""
+    val = os.getenv(key)
+    if not val:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and key in st.secrets:
+                val = str(st.secrets[key])
+        except Exception:
+            pass
+    if val is None:
+        return default
+    val = val.strip()
+    if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+        val = val[1:-1].strip()
+    return val
+
 ## ENV VAR / SECRET - LLMS 
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-JINA_API_KEY = os.getenv("JINA_API_KEY")
+GROQ_API_KEY = _clean_env("GROQ_API_KEY")
+JINA_API_KEY = _clean_env("JINA_API_KEY")
 
 # GATEWAY 
 
-PORTKEY_API_KEY = os.getenv("PORTKEY_API_KEY")
+PORTKEY_API_KEY = _clean_env("PORTKEY_API_KEY")
 
 # GUARD MODEL 
 
-GUARD_MODEL_NAME = os.getenv("GUARD_MODEL_NAME", "openai/gpt-oss-safeguard-20b")
+GUARD_MODEL_NAME = _clean_env("GUARD_MODEL_NAME", "openai/gpt-oss-safeguard-20b")
 
 # TRACING 
 
-LANGSMITH_TRACING = os.getenv("LANGSMITH_TRACING", "false")
-LANGSMITH_ENDPOINT = os.getenv("LANGSMITH_ENDPOINT")
-LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY")
-LANGSMITH_PROJECT = os.getenv("LANGSMITH_PROJECT")
+LANGSMITH_TRACING = _clean_env("LANGSMITH_TRACING", "false")
+LANGSMITH_ENDPOINT = _clean_env("LANGSMITH_ENDPOINT")
+LANGSMITH_API_KEY = _clean_env("LANGSMITH_API_KEY")
+LANGSMITH_PROJECT = _clean_env("LANGSMITH_PROJECT")
 
 
 
@@ -40,14 +57,18 @@ DATA_FILE_PATH = os.path.join("data", "hr_policy.txt")
 # persistent memory - vectors # 100gb - ingestion 
 # cloud memory 
 
-QDRANT_URL = os.getenv("QDRANT_URL")
-QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
-QDRANT_COLLECTION_NAME = os.getenv("QDRANT_COLLECTION_NAME", "hr_policy")
+QDRANT_URL = _clean_env("QDRANT_URL")
+QDRANT_API_KEY = _clean_env("QDRANT_API_KEY")
+QDRANT_COLLECTION_NAME = _clean_env("QDRANT_COLLECTION_NAME", "hr-assistant")
 
 ## MODELS 
 # LLM and EMBEDING MODEL 
 
-LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "groq/compound")
+raw_llm_model = _clean_env("LLM_MODEL_NAME", "llama-3.3-70b-versatile")
+if not raw_llm_model or "qwen" in raw_llm_model.lower():
+    LLM_MODEL_NAME = "llama-3.3-70b-versatile"
+else:
+    LLM_MODEL_NAME = raw_llm_model
 
 EMBEDDING_MODEL_NAME = "jina-embeddings-v2-base-en"
 
