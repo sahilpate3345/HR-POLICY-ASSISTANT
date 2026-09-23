@@ -32,7 +32,8 @@ REFUSAL_MESSAGE = "Sorry, I can't help with that request."
 # assignment , you will use portkey gateway to replay chatgroq from guardllm
 
 if config.PORTKEY_API_KEY:
-    headers = createHeaders(api_key=config.PORTKEY_API_KEY, provider="@hrpolicy")
+    headers = createHeaders(api_key=config.PORTKEY_API_KEY, provider="@HRPOLICY")
+    headers["Content-Type"] = "application/json"
     _guard_llm = ChatOpenAI(
         api_key="portkey",
         base_url=PORTKEY_GATEWAY_URL,
