@@ -7,21 +7,30 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 def _clean_env(key: str, default: str | None = None) -> str | None:
-    """Retrieve environment variable and strip surrounding quotes/whitespace."""
+    """Retrieve environment variable and strip surrounding quotes/whitespace.
+    Bridges Streamlit secrets into os.environ for cloud deployment."""
     val = os.getenv(key)
     if not val:
         try:
             import streamlit as st
-            if hasattr(st, "secrets") and key in st.secrets:
-                val = str(st.secrets[key])
+            if hasattr(st, "secrets"):
+                if key in st.secrets:
+                    val = str(st.secrets[key])
+                elif key.lower() in st.secrets:
+                    val = str(st.secrets[key.lower()])
+                elif key.upper() in st.secrets:
+                    val = str(st.secrets[key.upper()])
         except Exception:
             pass
-    if val is None:
-        return default
-    val = val.strip()
-    if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
-        val = val[1:-1].strip()
-    return val
+
+    if val is not None:
+        val = val.strip()
+        if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+            val = val[1:-1].strip()
+        os.environ[key] = val
+        return val
+
+    return default
 
 ## ENV VAR / SECRET - LLMS 
 
@@ -95,13 +104,13 @@ SYSTEM_PROMPT = (
 def check_api_keys() -> None:
     """Stop early with a clear message if a required API key is missing."""
     if not GROQ_API_KEY:
-        raise ValueError("Missing GROQ_API_KEY. Please add it to your .env file.")
+        raise ValueError("Missing GROQ_API_KEY. Please add it to your .env file or Streamlit Cloud Secrets.")
     if not JINA_API_KEY:
-        raise ValueError("Missing JINA_API_KEY. Please add it to your .env file.")
+        raise ValueError("Missing JINA_API_KEY. Please add it to your .env file or Streamlit Cloud Secrets.")
     if not QDRANT_URL or not QDRANT_API_KEY:
-        raise ValueError("Missing QDRANT_URL/QDRANT_API_KEY. Please add them to your .env file.")
+        raise ValueError("Missing QDRANT_URL/QDRANT_API_KEY. Please add them to your .env file or Streamlit Cloud Secrets.")
     if not PORTKEY_API_KEY:
-        raise ValueError("Missing PORTKEY_API_KEY. Please add it to your .env file.")
+        raise ValueError("Missing PORTKEY_API_KEY. Please add it to your .env file or Streamlit Cloud Secrets.")
 
 
 # Legacy / Compatibility Aliases
