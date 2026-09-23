@@ -64,9 +64,9 @@ QDRANT_COLLECTION_NAME = _clean_env("QDRANT_COLLECTION_NAME", "hr-assistant")
 ## MODELS 
 # LLM and EMBEDING MODEL 
 
-raw_llm_model = _clean_env("LLM_MODEL_NAME", "llama-3.3-70b-versatile")
-if not raw_llm_model or "qwen" in raw_llm_model.lower():
-    LLM_MODEL_NAME = "llama-3.3-70b-versatile"
+raw_llm_model = _clean_env("LLM_MODEL_NAME", "openai/gpt-oss-120b")
+if not raw_llm_model or "qwen3.6" in raw_llm_model.lower():
+    LLM_MODEL_NAME = "openai/gpt-oss-120b"
 else:
     LLM_MODEL_NAME = raw_llm_model
 
