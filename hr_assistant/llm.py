@@ -24,7 +24,8 @@ class GroqLLM:
                 "Content-Type": "application/json"
             }
 
-        models_to_try = [self.model, "groq/compound", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+        valid_models = ["llama-3.3-70b-versatile", "llama3-70b-8192", "llama3-8b-8192", "gemma2-9b-it"]
+        models_to_try = [self.model, "groq/compound"] + valid_models
         models_to_try = list(dict.fromkeys([m for m in models_to_try if m]))
 
         last_error = ""
@@ -52,7 +53,7 @@ class GroqLLM:
             try:
                 pk_groq_headers = createHeaders(api_key=PORTKEY_API_KEY, provider="groq")
                 pk_groq_headers["Content-Type"] = "application/json"
-                for m in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+                for m in valid_models:
                     payload = {"model": m, "messages": messages, "temperature": 0.2}
                     resp = requests.post(self.api_url, json=payload, headers=pk_groq_headers, timeout=45)
                     if resp.status_code == 200:
@@ -69,7 +70,7 @@ class GroqLLM:
                 "Authorization": f"Bearer {groq_key}",
                 "Content-Type": "application/json"
             }
-            for m in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+            for m in valid_models:
                 payload = {"model": m, "messages": messages, "temperature": 0.2}
                 try:
                     resp = requests.post(groq_url, json=payload, headers=groq_headers, timeout=45)
