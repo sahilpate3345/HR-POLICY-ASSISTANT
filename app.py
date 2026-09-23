@@ -11,7 +11,7 @@ st.title("🤖 HR Policy Assistant")
 st.caption("Ask me anything about the company HR policy document.")
 
 
-@st.cache_resource(show_spinner="Setting up the assistant (only happens once)...")
+@st.cache_resource(ttl=3600, show_spinner="Setting up the assistant (only happens once)...")
 def get_agent():
     return build_hr_assistant()
 
